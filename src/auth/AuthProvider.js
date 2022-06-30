@@ -8,6 +8,7 @@ export default function AuthProvider({children}) {
     const [logged, setLogged] = useState(false);
     const [user, setUser] = useState();
     const [token, setToken] = useCookies();
+    const [loadingNotes,setLoadingNotes] = useState(true);
 
     useEffect(()=>{
         if(token.token){
@@ -35,6 +36,8 @@ export default function AuthProvider({children}) {
         token,
         user,
         loading,
+        loadingNotes,
+        setLoadingNotes,
         login() { setLogged(true) },
         logout() { setLogged(false) },
         isLogged() { return logged },

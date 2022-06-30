@@ -27,8 +27,10 @@ app.use("/login",LoginRoutes)
 app.use("/logout",LogoutRoutes)
 app.use("/decode",DecodeTokenRoutes)
 
+const atlasConnection = "mongodb+srv://sebacoppola:martinAtlas4245@cluster0.n2kbkfp.mongodb.net/miNotes?retryWrites=true&w=majority"
+const localConnection = "mongodb://localhost:27017/minotes"
 //DB CONNECTION & WEBSERVER CONNECTION
-mongoose.connect("mongodb://localhost:27017/minotes")
+mongoose.connect(atlasConnection)
 .then(()=>{
     console.log("Connected to mongodb")
 })

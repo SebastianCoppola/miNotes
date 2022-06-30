@@ -38,38 +38,26 @@ const createNote = async (req, res) => {
         //console.log(new_note);
         user.notes.push(new_note)
         await user.save()
-        res.send({message:'Sale Created.'})
+        res.send({message:'Note Created.'})
     } catch (e) {
         res.status(500).send({message:'Server Error.'})
     }
 }
 
-//EDIT SALE:
+//NEW EDIT NOTE: 
 const editNote = async (req, res) => {
-    const { id, userId, productId, amount } = req.body
-    if (!validator.isMongoId(id) || !validator.isMongoId(userId) || !validator.isMongoId(productId)) {
+    const { id, title, content, priority } = req.body
+    if (!validator.isMongoId(id)) {
         res.status(400).send({message:'Invalid Params.'})
         return
     }
     try {
-        //DELETE OLD NOTE:
             const note = await Notes.findById(id);
-            
-            const user = await Users.findById(sale.userId);
-            for (let i = 0; i < user.notes.length; i++) {
-                if (user.notes[i]._id == id) {
-                    user.notes.splice(i, 1);
-                    break;
-                }
-            }
-            await user.save();
-            await Notes.findByIdAndDelete(id);
-        //CREATE NEW SALE:
-            const new_note = new Notes({ productId, userId, amount, price : product.price * amount })
-            await new_note.save()
-            user.notes.push(new_note)
-            await user.save()
-            res.send({message:'Sale Updated.'})
+            note.title = title;
+            note.content = content;
+            note.priority = priority;
+            await note.save();
+            res.send({message:'Note Updated.'})
     } catch (e) {
         res.status(500).send({message:'Server Error.'})
     }
@@ -94,9 +82,9 @@ const deleteNote = async (req, res) => {
         await user.save();
         await Notes.findByIdAndDelete(id);
         if (note) {
-            res.send({message:'Sale Deleted.'})
+            res.send({message:'Note Deleted.'})
         } else {
-            res.status(400).send({message:'The sale does not exist.'})
+            res.status(400).send({message:'The note does not exist.'})
         }
     } catch (e) {
         res.status(500).send({message:'Server Error.'})

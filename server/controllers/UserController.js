@@ -86,6 +86,7 @@ const deleteUser = async (req, res) => {
     try {
         const encontrado = await User.findByIdAndDelete(id)
         if (encontrado) {
+            res.clearCookie('token');
             res.send({message:'User Deleted.'})
         } else {
             res.status(400).send({message:'User does not exist.'})

@@ -1,10 +1,10 @@
 import React from 'react'
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Modal from '@mui/material/Modal';
 import useAuth from '../../context/useAuth';
 import useLang from '../../context/useLang';
 import usePasswordToggle from '../../hooks/usePasswordToggle';
+import { CircularProgress, Modal } from '@mui/material';
 
 export default function LoginForm() {
     const auth = useAuth();
@@ -12,9 +12,11 @@ export default function LoginForm() {
     const warningsLogin = useRef();
     const forgottenPassword = useRef();
     const [PasswordInputType, ToggleIcon] = usePasswordToggle();
+    const [loading, setLoading] = useState(false)
     const lang = useLang();
     //LOGIN:
     const handleLogin = (e) => {
+        setLoading(true)
         e.preventDefault();
         const user = { mail: e.target.mail.value, password: e.target.password.value };
         fetch("/login", {
@@ -159,32 +161,39 @@ export default function LoginForm() {
     return (
         <div className='login-body-right'>
             <div className='login-box'>
-                <form className='login-form' onSubmit={handleLogin}>
-                    <h4>{lang.texts.login1}</h4>
-                    <div className="input-group">
-                        <input type='text' name='mail' placeholder={lang.texts.login2}/>
-                    </div>
-                    <div className="input-group">
-                        <input type={PasswordInputType} name='password' placeholder={lang.texts.login3} />
-                        <span className="password-toggle-icon">{ToggleIcon}</span>
-                    </div>
-                    <div className="warnings-box">
-                        <p className="warnings-p" ref={warningsLogin}></p>
-                        <button className="warnings-button" 
-                            type='button'
-                            ref={forgottenPassword} 
-                            onClick={handleFortgotenPassword}
-                            hidden>{lang.texts.login8}</button>
-                    </div>
-                    <button type='submit' className='submit'>{lang.texts.login4}</button>
-                </form>
-                <div className="signup-controlls">
-                    <p><i>{lang.texts.login5}</i></p>
-                    <button type='button' onClick={openCloseModalCU}>{lang.texts.login6}</button>
-                </div>
+                {loading ? 
+                    <CircularProgress />
+                :
+                    <>
+                        <form className='login-form' onSubmit={handleLogin}>
+                            <h4>{lang.texts.login1}</h4>
+                            <div className="input-group">
+                                <input type='text' name='mail' placeholder={lang.texts.login2}/>
+                            </div>
+                            <div className="input-group">
+                                <input type={PasswordInputType} name='password' placeholder={lang.texts.login3} />
+                                <span className="password-toggle-icon">{ToggleIcon}</span>
+                            </div>
+                            <div className="warnings-box">
+                                <p className="warnings-p" ref={warningsLogin}></p>
+                                <button className="warnings-button" 
+                                    type='button'
+                                    ref={forgottenPassword} 
+                                    onClick={handleFortgotenPassword}
+                                    hidden>{lang.texts.login8}</button>
+                            </div>
+                            <button type='submit' className='submit'>{lang.texts.login4}</button>
+                        </form>
+                        <div className="signup-controlls">
+                            <p><i>{lang.texts.login5}</i></p>
+                            <button type='button' onClick={openCloseModalCU}>{lang.texts.login6}</button>
+                        </div>
+                    </>
+                }
                 
                 <Modal open={modalCU} onClose={openCloseModalCU}>{modalCreateUser}</Modal>
                 <Modal open={modalThanks} onClose={openCloseModalThanks}>{modalThanksForRegistering}</Modal>
+                
             </div>
         </div>
     )

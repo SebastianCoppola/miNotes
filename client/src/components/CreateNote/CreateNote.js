@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import useAuth from '../../context/useAuth';
 import useLang from '../../context/useLang';
+import { BASE_URL } from '../../utils/url';
 
 
 const CreateNote = () => {
@@ -15,7 +16,7 @@ const CreateNote = () => {
             content : e.target.content.value,
             priority : e.target.priority.value
         }
-        fetch("/note", {
+        fetch(`${BASE_URL}/note`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

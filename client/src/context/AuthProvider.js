@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
+import { BASE_URL } from "../utils/url";
 
 export const AuthContext = createContext();
 
@@ -12,7 +13,7 @@ export default function AuthProvider({children}) {
 
     useEffect(()=>{
         if(token.token){
-            fetch('/decode', {
+            fetch(`${BASE_URL}/decode`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

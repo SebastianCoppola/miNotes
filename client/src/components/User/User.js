@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Spinner from '../commons/Spinner';
 import useAuth from '../../context/useAuth';
 import useLang from '../../context/useLang';
+import { BASE_URL } from '../../utils/url';
 
 const User = () => {
     const [loading, setLoading] = useState(true);
@@ -10,7 +11,7 @@ const User = () => {
 
     useEffect(()=>{
         setLoading(false);
-    })
+    },[])
     
     //SAVE USER INFO
     const handleSave = (e) => {
@@ -22,7 +23,7 @@ const User = () => {
             mail : e.target.mail.value,
             password : e.target.password.value
         }
-        fetch("/user", {
+        fetch(`${BASE_URL}/user`, {
             method: 'PUT',
             headers: {
                 "content-type" : "application/json",
@@ -38,7 +39,7 @@ const User = () => {
     const handleDelete = (e) => {
         e.preventDefault();
         const id = { "id" : auth.user._id };
-        fetch("/user", {
+        fetch(`${BASE_URL}/user`, {
             method: 'DELETE',
             headers: {
                 "content-type" : "application/json",

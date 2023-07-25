@@ -5,6 +5,7 @@ import useAuth from '../../context/useAuth';
 import useLang from '../../context/useLang';
 import usePasswordToggle from '../../hooks/usePasswordToggle';
 import { CircularProgress, Modal } from '@mui/material';
+import { BASE_URL } from '../../utils/url';
 
 export default function LoginForm() {
     const auth = useAuth();
@@ -19,7 +20,7 @@ export default function LoginForm() {
         setLoading(true)
         e.preventDefault();
         const user = { mail: e.target.mail.value, password: e.target.password.value };
-        fetch("/login", {
+        fetch(`${BASE_URL}/login`, {
             method: 'POST',
             headers: {
                 "content-type" : "application/json"
@@ -53,7 +54,7 @@ export default function LoginForm() {
     }
     const handleFortgotenPassword = (e) => {
         const mail = {mail: e.target.id};
-        fetch("/login/resetPassword", {
+        fetch(`${BASE_URL}/login/resetPassword`, {
             method: 'POST',
             headers: {
                 "content-type" : "application/json"
@@ -106,7 +107,7 @@ export default function LoginForm() {
             mail : e.target.mail.value,
             password : e.target.password.value
         }
-        fetch("/user", {
+        fetch(`${BASE_URL}/user`, {
             method: 'POST',
             headers: {
                 "content-type" : "application/json"

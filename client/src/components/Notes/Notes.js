@@ -6,6 +6,7 @@ import Spinner from '../commons/Spinner';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import EditOffIcon from '@mui/icons-material/EditOff';
+import { BASE_URL } from '../../utils/url';
 
 
 const Notes = () => {
@@ -13,11 +14,18 @@ const Notes = () => {
     const [loading, setLoading] = useState(true)
     const auth = useAuth();
 
+    useEffect(()=>{
+        if(loading){
+            auth.setLoadingNotes(true)
+            if(setLoading) setLoading(false)
+        }
+    })
+
     //DELETE NOTE:
     const handleDeleteNote = (e) => {
         if(e.target.parentElement.id){
             const id = { "id" : e.target.parentElement.id };
-            fetch("/note", {
+            fetch(`${BASE_URL}/note`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -33,7 +41,6 @@ const Notes = () => {
     //EDIT NOTE: 
     const handleEditOn = (e) => {
         if(e.target.parentElement.id){
-            const id = { "id" : e.target.parentElement.id };
             e.target.parentElement.parentElement.classList.toggle("hidden");
             e.target.parentElement.parentElement.nextElementSibling.classList.toggle("hidden")
             const inputsCol = e.target.parentElement.parentElement.parentElement.previousElementSibling.children;
@@ -46,7 +53,6 @@ const Notes = () => {
     }
     const handleEditOff = (e) => {
         if(e.target.parentElement.id){
-            const id = { "id" : e.target.parentElement.id };
             e.target.parentElement.parentElement.classList.toggle("hidden");
             e.target.parentElement.parentElement.previousElementSibling.classList.toggle("hidden");
             const inputsCol = e.target.parentElement.parentElement.parentElement.previousElementSibling.children;
@@ -60,7 +66,7 @@ const Notes = () => {
                 content : inputsArr[1].value,
                 priority : inputsArr[2].value
             }
-            fetch("/note", {
+            fetch(`${BASE_URL}/note`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -78,12 +84,12 @@ const Notes = () => {
     //CARGAR TODAS LAS NOTAS:
     useEffect(() => {
         if(auth.loadingNotes){
-            fetch(`/note/${auth.user._id}`, {
+            fetch(`${BASE_URL}/note/${auth.user._id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type' : 'application/json',
                     'Authorization' : 'Bearer ' + `Bearer ${auth.token.token}`
-                    }
+                }
             })
             .then(res => res.json())
             .then(res => {
@@ -93,12 +99,6 @@ const Notes = () => {
         }
     },[auth.loadingNotes])
 
-    useEffect(()=>{
-        if(loading){
-            auth.setLoadingNotes(true)
-            setLoading(false)
-        }
-    })
 
     return (
         <>
@@ -110,7 +110,7 @@ const Notes = () => {
                 notes.length > 0 
                 ?
                 notes.map( note =>
-                    <form key={note._id} className={`${ note.priority == "today" ? 'note-card-today' : 'note-card-tomorrow' }`}>
+                    <form key={note._id} className={`${ note.priority === "today" ? 'note-card-today' : 'note-card-tomorrow' }`}>
                         <div>
                             <input className="note-card-input nci-title" type="text" name="title" defaultValue={note.title} disabled />
                             <textarea className="note-card-input nci-content" type="text" name="content" defaultValue={note.content} disabled/>

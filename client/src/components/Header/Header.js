@@ -2,13 +2,14 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import useAuth from '../../context/useAuth';
 import useLang from '../../context/useLang';
+import { BASE_URL } from '../../utils/url';
 
 const Header = () => {
     const auth = useAuth();
     const lang = useLang();
 
     const handleClick = () => {
-        fetch("/logout", {
+        fetch(`${BASE_URL}/logout`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

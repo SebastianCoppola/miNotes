@@ -27,19 +27,6 @@ app.use("/login",LoginRoutes)
 app.use("/logout",LogoutRoutes)
 app.use("/decode",DecodeTokenRoutes)
 
-// DEPLOYMENT (PRODUCTION MODE):
-// const miNotes = path.resolve();
-// if (process.env.NODE_ENV === "production") {
-//     app.use(express.static(path.join(miNotes, "/build")));
-//     app.get("*", (req, res) =>
-//         res.sendFile(path.resolve(miNotes, "build", "index.html"))
-//     );
-// } else {
-//     app.get("/", (req, res) => {
-//         res.send("API is running.");
-//     });
-// }
-
 //DB CONNECTION & WEBSERVER CONNECTION
 const PORT = process.env.PORT || 5000;
 mongoose.set('strictQuery', false)

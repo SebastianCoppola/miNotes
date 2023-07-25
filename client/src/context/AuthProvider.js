@@ -13,7 +13,8 @@ export default function AuthProvider({children}) {
 
     useEffect(()=>{
         if(token.token){
-            fetch(`${BASE_URL}/decode`, {
+            const url = `${BASE_URL}/decode`
+            fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

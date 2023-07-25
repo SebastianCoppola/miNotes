@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const path = require('path');
+const cors = require('cors');
 
 //ROUTES
 const UserRoutes = require('./routes/UserRoutes');
@@ -17,13 +18,7 @@ const app = express()
 //WEBSERVER CONFIG
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
-
-
-//DEV MODE:
-// const miNotes = path.resolve();
-// app.get("/", (req,res) => {
-//     res.sendFile(path.resolve(miNotes, "public", "index.html"))
-// })
+app.use(cors())
 
 //WEBSERVER ROUTES
 app.use("/note",NoteRoutes)
@@ -33,21 +28,21 @@ app.use("/logout",LogoutRoutes)
 app.use("/decode",DecodeTokenRoutes)
 
 // DEPLOYMENT (PRODUCTION MODE):
-const miNotes = path.resolve();
-if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(miNotes, "/build")));
-    app.get("*", (req, res) =>
-        res.sendFile(path.resolve(miNotes, "build", "index.html"))
-    );
-} else {
-    app.get("/", (req, res) => {
-        res.send("API is running.");
-    });
-}
+// const miNotes = path.resolve();
+// if (process.env.NODE_ENV === "production") {
+//     app.use(express.static(path.join(miNotes, "/build")));
+//     app.get("*", (req, res) =>
+//         res.sendFile(path.resolve(miNotes, "build", "index.html"))
+//     );
+// } else {
+//     app.get("/", (req, res) => {
+//         res.send("API is running.");
+//     });
+// }
 
 //DB CONNECTION & WEBSERVER CONNECTION
 const PORT = process.env.PORT || 5000;
-
+mongoose.set('strictQuery', false)
 mongoose.connect(process.env.atlasConnection)
 .then(()=>{
     console.log("Connected to mongodb")

@@ -5,9 +5,7 @@ export default function PrivateRoute() {
     const auth = useAuth();
     return (
         <>
-            {
-                auth.isLogged()
-                ? 
+            {auth.isLogged() ? 
                 <Outlet />
                 : 
                 <Navigate to='/login' /> 

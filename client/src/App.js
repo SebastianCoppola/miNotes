@@ -1,7 +1,7 @@
-import './App.css';
-import AuthProvider from '../src/context/AuthProvider';
-import AppRoutes from './routes/AppRoutes';
-import LanguageProvider from './context/LanguageProvider';
+import './App.css'
+import AppRoutes from './routes/AppRoutes'
+import AuthProvider from '../src/context/AuthProvider'
+import LanguageProvider from './context/LanguageProvider'
 
 function App() {
 	return (

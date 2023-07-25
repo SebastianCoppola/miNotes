@@ -1,52 +1,54 @@
-import React from 'react'
-import { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import useAuth from '../../context/useAuth';
-import useLang from '../../context/useLang';
-import usePasswordToggle from '../../hooks/usePasswordToggle';
-import { CircularProgress, Modal } from '@mui/material';
-import { BASE_URL } from '../../utils/url';
+import React, { useState, useRef } from 'react'
+import useAuth from '../../context/useAuth'
+import useLang from '../../context/useLang'
+import usePasswordToggle from '../../hooks/usePasswordToggle'
+import { useNavigate } from 'react-router-dom'
+import { CircularProgress } from '@mui/material'
+import { BASE_URL } from '../../utils/url'
+import CreateUserModal from '../Register/CreateUserModal'
+import ThanksModal from '../Register/ThanksModal'
 
 export default function LoginForm() {
-    const auth = useAuth();
-    const navigate = useNavigate();
-    const warningsLogin = useRef();
-    const forgottenPassword = useRef();
-    const [PasswordInputType, ToggleIcon] = usePasswordToggle();
+    const navigate = useNavigate()
+    const auth = useAuth()
+    const lang = useLang()
+    const warningsLogin = useRef()
+    const forgottenPassword = useRef()
+    const [PasswordInputType, ToggleIcon] = usePasswordToggle()
     const [loading, setLoading] = useState(false)
-    const lang = useLang();
+    
     //LOGIN:
     const handleLogin = (e) => {
+        e.preventDefault()
         setLoading(true)
-        e.preventDefault();
-        const user = { mail: e.target.mail.value, password: e.target.password.value };
+        let user = { mail: e.target.mail.value, password: e.target.password.value }
         fetch(`${BASE_URL}/login`, {
             method: 'POST',
-            headers: {
-                "content-type" : "application/json"
-            },
+            headers: { "content-type" : "application/json"},
             body: JSON.stringify(user)
         })
         .then(res => {
             if(res.status === 200){
                 res.json()
                 .then(res => {
-                    auth.login();
-                    navigate('/');
-                    window.location.reload();
+                    console.log(res)
+                    auth.setToken('token', res.token)
+                    // auth.login()
+                    navigate('/')
+                    window.location.reload()
                 })
             }else if(res.status === 401){
                 res.json()
                 .then(res => {
-                    warningsLogin.current.innerHTML = lang.texts.login7a;
-                    forgottenPassword.current.hidden = false;
-                    forgottenPassword.current.id = res.mail;
+                    warningsLogin.current.innerHTML = lang.texts.login7a
+                    forgottenPassword.current.hidden = false
+                    forgottenPassword.current.id = res.mail
                 })
             }else{
                 res.json()
                 .then(res => {
-                    forgottenPassword.current.hidden = true;
-                    warningsLogin.current.innerHTML = res.message;
+                    forgottenPassword.current.hidden = true
+                    warningsLogin.current.innerHTML = res.message
                 })
             }
         })
@@ -56,9 +58,7 @@ export default function LoginForm() {
         const mail = {mail: e.target.id};
         fetch(`${BASE_URL}/login/resetPassword`, {
             method: 'POST',
-            headers: {
-                "content-type" : "application/json"
-            },
+            headers: {"content-type" : "application/json"},
             body: JSON.stringify(mail)
         })
         .then(res => {
@@ -82,82 +82,24 @@ export default function LoginForm() {
     const [messageP, setMessageP] = useState('');
     const [modalCU, setModalCU] = useState(false);
     const [modalThanks, setModalThanks] = useState(false);
-    const warningsSignUp = useRef();
+    
     const openCloseModalCU = (e) => {
-        e.preventDefault();
-        setModalCU(!modalCU);
+        e.preventDefault()
+        setModalCU(!modalCU)
     }
+
     const openCloseModalThanks = (status) => {
-        setModalThanks(true);
+        setModalThanks(true)
         if(status === 200){
-            setTimeout(() => {
-                window.location.reload();
-            },3000);
+            setTimeout(() => { window.location.reload() }, 3000)
         }else{
-            setTimeout(() => {
-                setModalThanks(false);
-            },3000);
+            setTimeout(() => { setModalThanks(false) }, 3000)
         }
     }
-    const handleCreate = (e) => {
-        e.preventDefault();
-        const new_user = {
-            name : e.target.name.value,
-            surname : e.target.surname.value,
-            mail : e.target.mail.value,
-            password : e.target.password.value
-        }
-        fetch(`${BASE_URL}/user`, {
-            method: 'POST',
-            headers: {
-                "content-type" : "application/json"
-            },
-            body: JSON.stringify(new_user)
-        })
-        .then( res => {
-            if(res.status === 409){
-                warningsSignUp.current.innerHTML = lang.texts.register8;  
-            } else if (res.status === 400){
-                setMessageH2(lang.texts.register9);
-                setMessageP(lang.texts.register10)
-                openCloseModalThanks(res.status);
-            } else if (res.status === 500){
-                setMessageH2(lang.texts.register9);
-                setMessageP(lang.texts.register11);
-                openCloseModalThanks(res.status);
-            } else if (res.status === 200){
-                setMessageH2(lang.texts.register12);
-                setMessageP(lang.texts.register13);
-                openCloseModalThanks(res.status)
-            }
-        })
-    }
-    const modalCreateUser = (
-        <div className='modal-page'>
-            <div className='modal-box'>
-                <h2>{lang.texts.register1}</h2>
-                <form onSubmit={handleCreate} className="modal-form">
-                    <input type="text" placeholder={lang.texts.register2} name="name" required/>
-                    <input type="text" placeholder={lang.texts.register3} name="surname" required/>
-                    <input type="text" placeholder={lang.texts.register4} name="mail" required/>
-                    <input type="text" placeholder={lang.texts.register5} name="password" required/>
-                    <p className="warnings-sigup" ref={warningsSignUp}></p>
-                    <div className="modal-controllers">
-                        <button>{lang.texts.register6}</button>
-                        <button onClick={openCloseModalCU}>{lang.texts.register7}</button>
-                    </div>
-                </form>    
-            </div>
-        </div>
-    )
-    const modalThanksForRegistering = (
-        <div className='modal-page'>
-            <div className='modal-box'>
-                <h2>{messageH2}</h2>
-                <p>{messageP}</p>   
-            </div>
-        </div>
-    )
+
+    
+
+
 
     return (
         <div className='login-body-right'>
@@ -192,9 +134,19 @@ export default function LoginForm() {
                     </>
                 }
                 
-                <Modal open={modalCU} onClose={openCloseModalCU}>{modalCreateUser}</Modal>
-                <Modal open={modalThanks} onClose={openCloseModalThanks}>{modalThanksForRegistering}</Modal>
-                
+                <CreateUserModal 
+                    modalCU={modalCU} 
+                    openCloseModalCU={openCloseModalCU} 
+                    setMessageH2={setMessageH2}
+                    setMessageP={setMessageP}
+                    openCloseModalThanks={openCloseModalThanks}
+                />
+                <ThanksModal 
+                    modalThanks={modalThanks} 
+                    openCloseModalThanks={openCloseModalThanks} 
+                    messageH2={messageH2}
+                    messageP={messageP}
+                />
             </div>
         </div>
     )

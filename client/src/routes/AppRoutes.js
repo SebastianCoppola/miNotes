@@ -1,16 +1,12 @@
-import React from "react";
-// REACT ROUTER DOM
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// VIEWS
-import LoginPage from '../views/LoginPage/LoginPage';
-import DashboardPage from '../views/DashboardPage/DashboardPage';
-import PrivateRoute from './PrivateRoute';
-import NotFoundPage from '../views/NotFoundPage/NotFoundPage';
-import About from '../components/About/About';
-import Notes from '../components/Notes/Notes';
-import User from '../components/User/User';
-
-
+import React from "react"
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import LoginPage from '../views/LoginPage/LoginPage'
+import DashboardPage from '../views/DashboardPage/DashboardPage'
+import PrivateRoute from './PrivateRoute'
+import NotFoundPage from '../views/NotFoundPage/NotFoundPage'
+import About from '../components/About/About'
+import Notes from '../components/Notes/Notes'
+import User from '../components/User/User'
 
 function AppRoutes() {
     return (
